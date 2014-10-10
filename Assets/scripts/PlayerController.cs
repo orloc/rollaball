@@ -4,14 +4,26 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
 	public float speed;
-	public GUIText countText;
 	public GUIText winText;
 	private int count;
+	private string countText;
+	private bool has_won;
 	
 	void Start() { 
 		count = 0;
-		SetCountText ();
+		has_won = false;
 		winText.text = "";
+	}
+
+	void OnGUI () {
+		// Make a background box
+		GUI.Box(new Rect(10,10,120,120), getCountText());
+	
+		if (has_won) {
+			if (GUI.Button (new Rect (30, 90, 80, 30), "Play Again")) {
+				Application.LoadLevel (Application.loadedLevel);
+			}
+		}
 	}
 
 	void FixedUpdate() { 
@@ -27,14 +39,22 @@ public class PlayerController : MonoBehaviour {
 		if (other.gameObject.tag == "Pickup") { 
 			other.gameObject.SetActive (false);
 			count++;
-			SetCountText();
+
+			doWinCheck ();
 		}
 	}
 
-	void SetCountText() { 
-		countText.text = "Count: " + count.ToString ();
+	string getCountText() { 
+		countText = "RollaBall\n\n" +
+					"Count: " + count.ToString () + "\n" +
+					"Time:";
 
+		return countText;
+	}
+
+	void doWinCheck(){ 
 		if (count == 12) { 
+			has_won = true;
 			winText.text = "You Win!!";
 		}
 	}
